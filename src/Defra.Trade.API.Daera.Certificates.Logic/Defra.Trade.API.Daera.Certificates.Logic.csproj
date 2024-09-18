@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.1" />
+    <PackageReference Include="Defra.Trade.API.CertificatesStore.V1.ApiClient" Version="2.5.0" />
+    <PackageReference Include="Defra.Trade.Common.Audit" Version="3.0.0" />
+    <PackageReference Include="Defra.Trade.ProtectiveMonitoring" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Defra.Trade.API.Daera.Certificates.Ehco.DocumentProvider\Defra.Trade.API.Daera.Certificates.Ehco.DocumentProvider.csproj" />
+    <ProjectReference Include="..\Defra.Trade.API.Daera.Certificates.Repository\Defra.Trade.API.Daera.Certificates.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
