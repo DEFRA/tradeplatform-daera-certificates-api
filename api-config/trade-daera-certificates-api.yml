@@ -1,0 +1,82 @@
+version: 0.0.1
+apimServiceName: "#{{ Environment.Name }}TRA#{{ nc-function-infrastructure }}#{{ nc-resource-apimanagement }}1001"
+apiVersionSets:
+  - id: trade-daera-certificates-api-dev
+    displayName: DAERA Retail Movement Scheme certificates - DEV
+    description: DAERA Retail Movement Scheme certificates API
+    versioningScheme: Segment
+  - id: trade-daera-certificates-api
+    displayName: DAERA Retail Movement Scheme certificates
+    description: DAERA Retail Movement Scheme certificates API
+    versioningScheme: Segment
+apis:
+  - name: trade-daera-certificates-api-v1-dev
+    type: http
+    displayName: DAERA Retail Movement Scheme certificates - DEV
+    description: Share General Certificate data with DAERA.
+    serviceUrl: https://defra.mock
+    openApiSpec: v1\swagger.json
+    policy: policies\apiReadPolicy.xml
+    suffix: daera-certificates/dev
+    subscriptionRequired: false
+    apiVersion: v1
+    apiVersionDescription: Version 1 DAERA Retail Movement Scheme certificates DEV
+    apiVersionSetId: trade-daera-certificates-api-dev
+    products: trd-dev
+    operations:
+      GetGeneralCertificateSummaries:
+        policy: policies\apiPolicy200MockResponses.xml
+    authenticationSettings:
+      oAuth2:
+        authorizationServerId: OAuth-Server
+      subscriptionKeyRequired: false
+    diagnostic:
+      name: applicationinsights
+      alwaysLog: allErrors
+      loggerId: "#{{ Environment.Name }}TRD#{{ nc-function-infrastructure }}#{{ nc-resource-appinsights }}1001"
+      sampling:
+        samplingType: fixed
+        percentage: 100
+      enableHttpCorrelationHeaders: true
+  - name: trade-daera-certificates-api-v1
+    type: http
+    displayName: DAERA Retail Movement Scheme certificates
+    description: Share General Certificate data with DAERA.
+    serviceUrl: "https://#{{ Environment.Name }}TRA#{{ nc-function-web }}#{{ nc-resource-webapp }}1015.azurewebsites.net/"
+    openApiSpec: v1\swagger.json
+    policy: policies\apiReadPolicy.xml
+    suffix: daera-certificates
+    subscriptionRequired: false
+    apiVersion: v1
+    apiVersionDescription: Version 1 DAERA Retail Movement Scheme certificates
+    apiVersionSetId: trade-daera-certificates-api
+    products: trd-prod
+    authenticationSettings:
+      oAuth2:
+        authorizationServerId: OAuth-Server
+      subscriptionKeyRequired: false
+    diagnostic:
+      name: applicationinsights
+      alwaysLog: allErrors
+      loggerId: "#{{ Environment.Name }}TRD#{{ nc-function-infrastructure }}#{{ nc-resource-appinsights }}1001"
+      sampling:
+        samplingType: fixed
+        percentage: 100
+      enableHttpCorrelationHeaders: true
+    dependsOn: trade-daera-certificates-api-v1-dev
+templateParameters:
+  - name: audience
+    value: "#{{ externalAPIMAudience }}"
+  - name: secondaryServiceUrl
+    value: "https://#{{ Environment.Name }}TRA#{{ nc-function-web }}#{{ nc-resource-webapp }}1215.azurewebsites.net/"
+  - name: aspClientId
+    reference:
+      keyVault:
+        id: "/subscriptions/#{{ subscriptionId }}/resourceGroups/#{{ Environment.Name }}TRD#{{ nc-function-infrastructure }}#{{ nc-resource-resourcegroup }}1001/providers/Microsoft.KeyVault/vaults/#{{ Environment.Name }}TRD#{{ nc-function-infrastructure }}#{{ nc-resource-keyvault }}1001"
+      secretName: "TRAWEBAS1003-OAuth-ClientId"
+  - name: roles
+    values:
+      roleTradeDaeraCertificatesRead: "#{{ roleTradeDaeraCertificatesRead }}"
+outputLocation: publish-templates
+linked: false
+baseFileName: trade-daera-certificates-api

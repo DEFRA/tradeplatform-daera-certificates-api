@@ -1,0 +1,75 @@
+name: 'V1-B$(Date:yyyyMMdd)-$(BuildID)'
+
+parameters:
+  - name: forceDevDeploy
+    displayName: "Force deployment to DEV"
+    type: boolean
+    default: false
+  - name: deployToSecondary
+    displayName: "Select Secondary Region"
+    type: string
+    default: PRD
+    values:
+      - None
+      - DEV
+      - TST
+      - PRE
+      - PRD
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - '*'
+  paths:
+    include:
+      - src/*
+
+resources:
+  repositories:
+    - repository: PipelineCommon
+      name: DEFRA-TRD/Defra.TRD.Pipeline.Common
+      type: git
+      ref: master
+  pipelines:
+    - pipeline: INFRA
+      source: Defra.Trade.API.Infra Trade Daera Certificates Api Ext
+      trigger:
+        branches:
+          include:
+            - '*'
+        stages:
+          - DEV
+
+variables:
+  APIName: Defra.Trade.API.Daera.Certificates
+
+extends:
+  template: /templates/basic-webapp-deploy-pipeline.yaml@PipelineCommon
+  parameters:
+    forceDevDeploy: ${{ parameters.forceDevDeploy }}
+    deployToSecondary: ${{ parameters.deployToSecondary}}
+    appName: $(APIName)
+    appProject: TRA
+    appInstanceNumber: $(nc-region-id)15
+    buildProjects: |
+      **/*.csproj
+    sonarExclusionPaths: '**/*Defra.Trade.API.Daera.Certificates.Database/*.*'
+    publishProject: '**/*API.Daera.Certificates.csproj'
+    publishArguments: '--configuration Release --self-contained true --runtime win-x86'
+    connectionStrings: '[{"name": "sql_db", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-daera-certificates;", "type": "SQLAzure", "slotSetting": false},{"name": "sql_db_ef", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-daera-certificates;Authentication=Active Directory Managed Identity;", "type": "SQLAzure", "slotSetting": false},{"name": "sql_db_audit", "value": "Server=tcp:$(sqlServerName),1433;Database=trade-sci-request-store;", "type": "SQLAzure", "slotSetting": false}]'
+    setupMiUser: 'true'
+    databaseName: 'trade-daera-certificates'
+    appSettings: >-
+      -DaeraCertificatesSettings:BaseUrl "https://$(Environment.Name)-gateway.trade.azure.defra.cloud"
+      -DaeraCertificatesSettings:DaeraCertificatesApiPathV1 "/daera-certificates/v1"
+      -ProtectiveMonitoringSettings:Enabled "true"
+      -ProtectiveMonitoringSettings:Environment "$(Environment.Name)"
+      -SocSettings:EventHubName "insights-application-logs"
+      -SocSettings:EventHubNameSpace "$(Environment.Name)TRDSOCEN1002.servicebus.windows.net"
+      -KeyVaultEndpoint "https://$(Environment.Name)trd$(nc-function-infrastructure)$(nc-resource-keyvault)1001.vault.azure.net/"
+      -ConfigurationServer:Uri "https://$(Environment.Name)TRDINFAC$(nc-region-id)01.azconfig.io"
+    publishAPIMApi:
+      apiConfig: '**/api-config/trade-daera-certificates-api.yml'
+      apiProjectName: '$(APIName)'
+      apiTemplate: 'trade-daera-certificates-api'
