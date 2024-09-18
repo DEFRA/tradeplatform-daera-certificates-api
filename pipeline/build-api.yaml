@@ -52,6 +52,7 @@ extends:
     appName: $(APIName)
     appProject: TRA
     appInstanceNumber: $(nc-region-id)15
+    scr: GH
     buildProjects: |
       **/*.csproj
     sonarExclusionPaths: '**/*Defra.Trade.API.Daera.Certificates.Database/*.*'
