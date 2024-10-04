@@ -3,7 +3,6 @@
 
 using Defra.Trade.API.CertificatesStore.V1.ApiClient.Api;
 using Defra.Trade.API.Daera.Certificates.Database.Context;
-using Defra.Trade.API.Daera.Certificates.Database.Services.Interfaces;
 using Defra.Trade.API.Daera.Certificates.Ehco.BlobClient;
 using Defra.Trade.API.Daera.Certificates.Ehco.BlobClient.Infrastructure;
 using Defra.Trade.API.Daera.Certificates.IntegrationTests.Helpers;
@@ -22,8 +21,6 @@ public class DaeraCertificatesApplicationFactory<TStartup> : WebApplicationFacto
     public DaeraCertificateDbContext DaeraCertificateDbContext { get; set; }
     public Mock<IAuditRepository> AuditRepository { get; set; }
     public Mock<ICertificatesStoreRepository> CertificatesStoreRepository { get; set; }
-    public Mock<IDbHealthCheckService> DbHealthCheckService { get; set; }
-    public Mock<IMonitorService> MonitorService { get; set; }
     public Mock<IDocumentRetrievalApi> DocumentRetrievalApi { get; set; }
 
     public DaeraCertificatesApplicationFactory() : base()
@@ -33,8 +30,6 @@ public class DaeraCertificatesApplicationFactory<TStartup> : WebApplicationFacto
         DaeraCertificateDbContext = GetDatabaseContext();
         AuditRepository = new Mock<IAuditRepository>();
         CertificatesStoreRepository = new Mock<ICertificatesStoreRepository>();
-        DbHealthCheckService = new Mock<IDbHealthCheckService>();
-        MonitorService = new Mock<IMonitorService>();
         DocumentRetrievalApi = new Mock<IDocumentRetrievalApi>();
     }
 
@@ -108,8 +103,6 @@ public class DaeraCertificatesApplicationFactory<TStartup> : WebApplicationFacto
             services.Replace(ServiceDescriptor.Singleton(DaeraCertificateDbContext));
             services.Replace(ServiceDescriptor.Singleton(AuditRepository.Object));
             services.Replace(ServiceDescriptor.Singleton(CertificatesStoreRepository.Object));
-            services.Replace(ServiceDescriptor.Singleton(DbHealthCheckService.Object));
-            services.Replace(ServiceDescriptor.Singleton(MonitorService.Object));
             services.AddTransient<IAzureBlobService<GcDocumentBlobStorageOptions>, FakeBlobService<GcDocumentBlobStorageOptions>>();
             services.Replace(ServiceDescriptor.Singleton(DocumentRetrievalApi.Object));
         });

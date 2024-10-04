@@ -5,8 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using Defra.Trade.API.CertificatesStore.V1.ApiClient.Api;
 using Defra.Trade.API.CertificatesStore.V1.ApiClient.Client;
 using Defra.Trade.API.Daera.Certificates.Database.Context;
-using Defra.Trade.API.Daera.Certificates.Database.Services;
-using Defra.Trade.API.Daera.Certificates.Database.Services.Interfaces;
 using Defra.Trade.API.Daera.Certificates.Ehco.BlobClient.Infrastructure;
 using Defra.Trade.API.Daera.Certificates.Ehco.DocumentProvider;
 using Defra.Trade.API.Daera.Certificates.Logic.Infrastructure;
@@ -75,10 +73,6 @@ public static class ServiceRegistrations
         services
             .AddHealthChecks()
             .AddDbContextCheck<DaeraCertificateDbContext>();
-
-        services
-            .AddScoped<IDbHealthCheckService, DbHealthCheckService>()
-            .AddScoped<IMonitorService, MonitorService>();
 
         return services;
     }

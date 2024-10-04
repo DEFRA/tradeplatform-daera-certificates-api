@@ -20,7 +20,7 @@
     </PropertyGroup>
   
     <ItemGroup>
-	    <PackageReference Include="Azure.Identity" Version="1.12.0" />
+	    <PackageReference Include="Azure.Identity" Version="1.12.1" />
 	    <PackageReference Include="Defra.Trade.API.CertificatesStore.V1.ApiClient" Version="2.5.0" />
 	    <PackageReference Include="Defra.Trade.Common.Security" Version="3.0.1" />
 	    <PackageReference Include="Defra.Trade.ProtectiveMonitoring" Version="3.0.0" />
